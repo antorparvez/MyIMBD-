@@ -1,0 +1,97 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="240dp"
+    android:viewportWidth="400"
+    android:viewportHeight="240">
+
+    <!-- Background -->
+    <path
+        android:fillColor="@color/gradient_start"
+        android:pathData="M0,0 L400,0 L400,240 L0,240 Z" />
+
+    <!-- Film strip pattern -->
+    <group>
+        <!-- Left film strip -->
+        <path
+            android:fillColor="@color/overlay_dark"
+            android:pathData="M0,0 L40,0 L40,240 L0,240 Z" />
+
+        <!-- Film holes - left side -->
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,20 L30,20 L30,30 L10,30 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,50 L30,50 L30,60 L10,60 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,80 L30,80 L30,90 L10,90 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,110 L30,110 L30,120 L10,120 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,140 L30,140 L30,150 L10,150 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,170 L30,170 L30,180 L10,180 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M10,200 L30,200 L30,210 L10,210 Z" />
+
+        <!-- Right film strip -->
+        <path
+            android:fillColor="@color/overlay_dark"
+            android:pathData="M360,0 L400,0 L400,240 L360,240 Z" />
+
+        <!-- Film holes - right side -->
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,20 L390,20 L390,30 L370,30 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,50 L390,50 L390,60 L370,60 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,80 L390,80 L390,90 L370,90 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,110 L390,110 L390,120 L370,120 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,140 L390,140 L390,150 L370,150 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,170 L390,170 L390,180 L370,180 Z" />
+        <path
+            android:fillColor="@color/gradient_start"
+            android:pathData="M370,200 L390,200 L390,210 L370,210 Z" />
+    </group>
+
+    <!-- Movie camera icon in center -->
+    <group
+        android:translateX="175"
+        android:translateY="95">
+        <path
+            android:fillColor="@color/primary_color"
+            android:fillAlpha="0.3"
+            android:pathData="M25,25 C38.8,25 50,13.8 50,0 C50,-13.8 38.8,-25 25,-25 C11.2,-25 0,-13.8 0,0 C0,13.8 11.2,25 25,25 Z" />
+
+        <!-- Camera body -->
+        <path
+            android:fillColor="@color/secondary_color"
+            android:fillAlpha="0.6"
+            android:pathData="M8,-15 L42,-15 C44.2,-15 46,-13.2 46,-11 L46,11 C46,13.2 44.2,15 42,15 L8,15 C5.8,15 4,13.2 4,11 L4,-11 C4,-13.2 5.8,-15 8,-15 Z" />
+
+        <!-- Lens -->
+        <path
+            android:fillColor="@color/primary_color"
+            android:pathData="M25,0 C30.5,0 35,4.5 35,10 C35,15.5 30.5,20 25,20 C19.5,20 15,15.5 15,10 C15,4.5 19.5,0 25,0 Z" />
+
+        <!-- Inner lens -->
+        <path
+            android:fillColor="@color/secondary_color"
+            android:pathData="M25,0 C28,0 30.5,2.5 30.5,5.5 C30.5,8.5 28,11 25,11 C22,11 19.5,8.5 19.5,5.5 C19.5,2.5 22,0 25,0 Z" />
+    </group>
+
+</vector>
