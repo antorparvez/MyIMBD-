@@ -1,0 +1,88 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "3028bd33cb91524293baf935e353070f",
+    "entities": [
+      {
+        "tableName": "movie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `year` TEXT NOT NULL, `runtime` TEXT, `director` TEXT, `actors` TEXT, `genres` TEXT NOT NULL, `plot` TEXT, `poster` TEXT, `isWishlisted` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "runtime",
+            "columnName": "runtime",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "director",
+            "columnName": "director",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actors",
+            "columnName": "actors",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "genres",
+            "columnName": "genres",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "plot",
+            "columnName": "plot",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "poster",
+            "columnName": "poster",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isWishlisted",
+            "columnName": "isWishlisted",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3028bd33cb91524293baf935e353070f')"
+    ]
+  }
+}

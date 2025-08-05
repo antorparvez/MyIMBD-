@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">MyIMBD</string>
+    <string name="app_logo">App Logo</string>
+    <string name="loading_data">Loading data...</string>
+    <string name="data_loaded">Data loaded successfully!</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="search_movies">Search movies</string>
+    <string name="filter_by_genre">Filter by genre</string>
+    <string name="all_genres">All Genres</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="movie_details">Movie Details</string>
+    <string name="add_to_wishlist">Add to wishlist</string>
+    <string name="remove_from_wishlist">Remove from wishlist</string>
+    <string name="director">Director</string>
+    <string name="cast">Cast</string>
+    <string name="genre">Genre</string>
+    <string name="plot">Plot</string>
+    <string name="rating">Rating</string>
+    <string name="year">Year</string>
+    <string name="no_movies_found">No movies found</string>
+    <string name="no_wishlist_items">No wishlist items</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="retry">Retry</string>
+    <string name="loading">Loading...</string>
+</resources>

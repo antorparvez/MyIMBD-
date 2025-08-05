@@ -1,0 +1,40 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyIMBDApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/accent_color</item>
+        <item name="colorSecondaryVariant">@color/accent_light</item>
+        <item name="colorOnSecondary">@color/white</item>
+        
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/primary_color</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/background_light</item>
+        <item name="colorSurface">@color/card_background</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <style name="Theme.MyIMBDApp" parent="Base.Theme.MyIMBDApp" />
+    
+    <!-- Splash theme -->
+    <style name="Theme.MyIMBDApp.Splash" parent="Theme.MyIMBDApp">
+        <item name="android:windowBackground">@color/primary_color</item>
+        <item name="android:statusBarColor">@color/primary_color</item>
+        <item name="android:navigationBarColor">@color/primary_color</item>
+    </style>
+    
+    <!-- AppBar overlay theme -->
+    <style name="Theme.MyIMBDApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    
+    <!-- Popup overlay theme -->
+    <style name="Theme.MyIMBDApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
