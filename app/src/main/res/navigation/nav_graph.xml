@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/moviesListFragment">
+
+    <fragment
+        android:id="@+id/moviesListFragment"
+        android:name="com.myimbd.app.ui.main.MoviesListFragment"
+        android:label="Movies"
+        tools:layout="@layout/fragment_movies_list" />
+
+    <!-- Add other fragments here if needed -->
+</navigation>

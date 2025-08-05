@@ -1,8 +1,7 @@
 package com.myimbd.app.ui.main.viewmodel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.viewModelScope
+import com.myimbd.app.base.BaseViewModel
 import com.myimbd.domain.model.MovieDomainEntity
 import com.myimbd.domain.usecase.GetMovieListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,55 +11,33 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getMoviesUseCase: GetMovieListUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
-    private val _movies = MutableLiveData<List<MovieDomainEntity>>()
-    val movies: LiveData<List<MovieDomainEntity>> = _movies
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?> = _error
+    private val _movies = androidx.lifecycle.MutableLiveData<List<MovieDomainEntity>>()
+    val movies: androidx.lifecycle.LiveData<List<MovieDomainEntity>> = _movies
 
     private var currentPage = 1
     private var isLoadingMore = false
 
-
-
     fun loadMovies() {
-        if (isLoadingMore) {
-            println("loadMovies: Already loading more, skipping call.")
-            return
-        }
+        if (isLoadingMore) return
 
         viewModelScope.launch {
             try {
-                println("loadMovies: Starting to load movies for page $currentPage")
-                _isLoading.value = true
-                _error.value = null
+                setLoading(true)
+                setError(null)
                 isLoadingMore = true
 
                 val result = getMoviesUseCase.invoke()
-                println("loadMovies: Received ${result.size} movies")
-
-                result.let { moviesList ->
-                    val updatedList = _movies.value.orEmpty() + moviesList
-                    _movies.value = updatedList
-                    println("loadMovies: Updated movies list size = ${updatedList.size}")
-                    currentPage++
-                }
-
+                val updatedList = _movies.value.orEmpty() + result
+                _movies.value = updatedList
+                currentPage++
             } catch (e: Exception) {
-                println("loadMovies: Error occurred - ${e.message}")
-                _error.value = e.message ?: "Unknown error"
+                setError(e.message ?: "Unknown error")
             } finally {
-                println("loadMovies: Finished loading movies")
-                _isLoading.value = false
+                setLoading(false)
                 isLoadingMore = false
             }
         }
     }
-
 }
-
