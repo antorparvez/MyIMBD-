@@ -1,127 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <!-- Primary Colors - Cinema Theme -->
-    <color name="primary_color">#FFE50914</color> <!-- Netflix Red -->
-    <color name="primary_dark">#FFB20710</color>
-    <color name="primary_light">#FFFF6B6B</color>
-    <color name="primary_variant">#FF8E0E00</color>
-
-    <!-- Secondary Colors -->
-    <color name="secondary_color">#FFFFD700</color> <!-- Gold -->
-    <color name="secondary_dark">#FFFFB300</color>
-    <color name="secondary_light">#FFFFF176</color>
-
-    <!-- Accent Colors -->
-    <color name="accent_color">#FF00BCD4</color> <!-- Cyan -->
-    <color name="accent_light">#FF80DEEA</color>
-    <color name="accent_dark">#FF0097A7</color>
-
+    <!-- Primary Colors -->
+    <color name="primary_color">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="primary_light">#BBDEFB</color>
+    
+    <!-- Secondary/Accent Colors -->
+    <color name="accent_color">#FF5722</color>
+    <color name="accent_light">#FFAB91</color>
+    <color name="accent_dark">#D84315</color>
+    <color name="secondary_color">#FF5722</color>
+    
     <!-- Background Colors -->
-    <color name="background_light">#FFF8F9FA</color>
-    <color name="background_dark">#FF0A0A0A</color>
-    <color name="background_gradient">#FF121212</color>
-    <color name="surface_color">#FFFFFFFF</color>
-    <color name="surface_dark">#FF1C1C1E</color>
-
+    <color name="background_light">#FAFAFA</color>
+    <color name="background_dark">#121212</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_background_dark">#1E1E1E</color>
+    <color name="background_gradient">#1976D2</color>
+    
     <!-- Text Colors -->
-    <color name="text_primary">#FF1A1A1A</color>
-    <color name="text_secondary">#FF6B7280</color>
-    <color name="text_tertiary">#FF9CA3AF</color>
-    <color name="text_primary_dark">#FFFFFFFF</color>
-    <color name="text_secondary_dark">#FFE5E7EB</color>
-    <color name="text_tertiary_dark">#FFD1D5DB</color>
-
-    <!-- Card Colors -->
-    <color name="card_background">#FFFFFFFF</color>
-    <color name="card_background_dark">#FF1C1C1E</color>
-    <color name="card_stroke_color">#FFF3F4F6</color>
-    <color name="card_stroke_dark">#FF374151</color>
-
-    <!-- Divider Colors -->
-    <color name="divider">#FFE5E7EB</color>
-    <color name="divider_dark">#FF374151</color>
-
-    <!-- Rating Colors -->
-    <color name="rating_star">#FFFFD700</color>
-    <color name="rating_background">#FFF9FAFB</color>
-    <color name="rating_text">#FF1F2937</color>
-
-    <!-- Button Colors -->
-    <color name="primary_fab_color">@color/primary_color</color>
-    <color name="secondary_fab_color">#FF6366F1</color> <!-- Indigo -->
-    <color name="fab_icon_color">@color/white</color>
-
-    <!-- Input Colors -->
-    <color name="hint_color">#FF9CA3AF</color>
-    <color name="input_background">#FFF9FAFB</color>
-    <color name="input_stroke">#FFE5E7EB</color>
-
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#B3FFFFFF</color>
+    <color name="hint_color">#9E9E9E</color>
+    
     <!-- Status Colors -->
-    <color name="success_color">#FF10B981</color>
-    <color name="warning_color">#FFF59E0B</color>
-    <color name="error_color">#FFEF4444</color>
-    <color name="info_color">#FF3B82F6</color>
-
-    <!-- Progress Colors -->
-    <color name="progress_track_color">#FFE5E7EB</color>
-    <color name="progress_indicator_color">@color/primary_color</color>
-
-    <!-- Empty State Colors -->
-    <color name="empty_state_color">#FF9CA3AF</color>
-    <color name="empty_state_subtitle_color">#FFD1D5DB</color>
-
+    <color name="success_color">#4CAF50</color>
+    <color name="error_color">#F44336</color>
+    <color name="warning_color">#FF9800</color>
+    <color name="info_color">#2196F3</color>
+    
     <!-- Chip Colors -->
-    <color name="chip_selected">#FFFFE4E6</color>
-    <color name="chip_selected_text">@color/primary_color</color>
-    <color name="chip_unselected">#FFF3F4F6</color>
-    <color name="chip_unselected_text">#FF6B7280</color>
-
-    <!-- Genre Colors for Movie Categories -->
-    <color name="genre_action">#FFDC2626</color>
-    <color name="genre_comedy">#FFCA8A04</color>
-    <color name="genre_drama">#FF7C3AED</color>
-    <color name="genre_horror">#FF991B1B</color>
-    <color name="genre_romance">#FFEC4899</color>
-    <color name="genre_scifi">#FF0891B2</color>
-    <color name="genre_thriller">#FF374151</color>
-    <color name="genre_animation">#FF059669</color>
-
-    <!-- Gradient Colors -->
-    <color name="gradient_start">#FF1A1A1A</color>
-    <color name="gradient_center">#FF2D1B69</color>
-    <color name="gradient_end">@color/primary_color</color>
-
+    <color name="chip_selected">#E3F2FD</color>
+    <color name="chip_selected_text">#1976D2</color>
+    <color name="chip_unselected">#F5F5F5</color>
+    <color name="chip_unselected_text">#757575</color>
+    <color name="chip_icon_color">#9E9E9E</color>
+    
+    <!-- Card Colors -->
+    <color name="card_stroke_color">#E0E0E0</color>
+    <color name="card_shadow_color">#1A000000</color>
+    
+    <!-- Progress Colors -->
+    <color name="progress_track_color">#E0E0E0</color>
+    
     <!-- Shadow Colors -->
     <color name="shadow_light">#1A000000</color>
     <color name="shadow_medium">#33000000</color>
-    <color name="shadow_dark">#4D000000</color>
-
-    <!-- Overlay Colors -->
-    <color name="overlay_light">#80FFFFFF</color>
-    <color name="overlay_dark">#80000000</color>
-    <color name="scrim_dark">#CC000000</color>
-
+    <color name="shadow_dark">#66000000</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#1976D2</color>
+    <color name="gradient_end">#1565C0</color>
+    <color name="gradient_center">#42A5F5</color>
+    <color name="gradient_overlay">#80000000</color>
+    
     <!-- Premium Colors -->
-    <color name="premium_gold">#FFFFD700</color>
-    <color name="premium_gradient_start">#FFFFD700</color>
-    <color name="premium_gradient_end">#FFFF8C00</color>
-
-    <!-- Interactive States -->
-    <color name="ripple_color">#1FE50914</color>
-    <color name="pressed_color">#0DE50914</color>
-    <color name="focused_color">#1FE50914</color>
-    <color name="disabled_color">#61000000</color>
-
+    <color name="premium_gold">#FFD700</color>
+    <color name="premium_silver">#C0C0C0</color>
+    <color name="premium_gradient_start">#FFD700</color>
+    <color name="premium_gradient_end">#FFA500</color>
+    
+    <!-- Surface Colors -->
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_dark">#121212</color>
+    
+    <!-- Standard Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Divider Colors -->
+    <color name="divider_light">#E0E0E0</color>
+    <color name="divider_dark">#424242</color>
+    <color name="divider">#E0E0E0</color>
+    
+    <!-- Ripple Colors -->
+    <color name="ripple_light">#1F000000</color>
+    <color name="ripple_dark">#33FFFFFF</color>
+    <color name="ripple_color">#1F000000</color>
+    
+    <!-- Overlay Colors -->
+    <color name="overlay_light">#80000000</color>
+    <color name="overlay_dark">#CC000000</color>
+    <color name="scrim_dark">#CC000000</color>
+    
+    <!-- Rating Colors -->
+    <color name="rating_star_filled">#FFD700</color>
+    <color name="rating_star_empty">#E0E0E0</color>
+    
+    <!-- Wishlist Colors -->
+    <color name="wishlist_heart_filled">#F44336</color>
+    <color name="wishlist_heart_empty">#9E9E9E</color>
+    
+    <!-- Search Colors -->
+    <color name="search_background">#F5F5F5</color>
+    <color name="search_background_dark">#2A2A2A</color>
+    
+    <!-- Filter Colors -->
+    <color name="filter_active">#E3F2FD</color>
+    <color name="filter_inactive">#F5F5F5</color>
+    
+    <!-- Animation Colors -->
+    <color name="animation_highlight">#E3F2FD</color>
+    
+    <!-- Status Bar Colors -->
+    <color name="status_bar_light">#1976D2</color>
+    <color name="status_bar_dark">#000000</color>
+    
+    <!-- Navigation Bar Colors -->
+    <color name="navigation_bar_light">#FFFFFF</color>
+    <color name="navigation_bar_dark">#121212</color>
+    
     <!-- Bottom Sheet Colors -->
-    <color name="bottom_sheet_background">@color/surface_color</color>
-    <color name="bottom_sheet_handle">#FFE5E7EB</color>
-
-    <!-- Bookmark/Wishlist Colors -->
-    <color name="bookmark_active">@color/secondary_color</color>
-    <color name="bookmark_inactive">#FFD1D5DB</color>
-    <color name="chip_icon_color">#1FE50914</color>
-
+    <color name="bottom_sheet_background">#FFFFFF</color>
+    <color name="bottom_sheet_handle">#E0E0E0</color>
+    
+    <!-- FAB Colors -->
+    <color name="primary_fab_color">#1976D2</color>
+    <color name="fab_icon_color">#FFFFFF</color>
+    
+    <!-- Empty State Colors -->
+    <color name="empty_state_color">#9E9E9E</color>
+    
 </resources>

@@ -7,13 +7,19 @@ import com.myimbd.app.base.BaseViewModel
 import com.myimbd.app.ui.main.adapter.ViewType
 import com.myimbd.domain.model.MovieDomainEntity
 import com.myimbd.domain.usecase.GetMovieListUseCase
+import com.myimbd.domain.usecase.GetMoviesByGenreUseCase
+import com.myimbd.domain.usecase.SearchMoviesUseCase
+import com.myimbd.domain.usecase.ToggleWishlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getMoviesUseCase: GetMovieListUseCase
+    private val getMoviesUseCase: GetMovieListUseCase,
+    private val searchMoviesUseCase: SearchMoviesUseCase,
+    private val getMoviesByGenreUseCase: GetMoviesByGenreUseCase,
+    private val toggleWishlistUseCase: ToggleWishlistUseCase
 ) : BaseViewModel() {
 
     private val _movies = MutableLiveData<List<MovieDomainEntity>>()
@@ -22,12 +28,16 @@ class MainViewModel @Inject constructor(
     private val _currentViewType = MutableLiveData(ViewType.LIST)
     val currentViewType: LiveData<ViewType> = _currentViewType
 
+    private val _wishlistCount = MutableLiveData<Int>()
+    val wishlistCount: LiveData<Int> = _wishlistCount
+
     private val allMovies = mutableListOf<MovieDomainEntity>()
     private var currentPage = 1
     private var isLoadingMore = false
+    private val pageSize = 10
 
     private var currentSearchQuery: String = ""
-    private var currentFilters: Set<String> = emptySet()
+    private var currentGenreFilter: String? = null
 
     fun toggleViewType() {
         _currentViewType.value = if (_currentViewType.value == ViewType.LIST) {
@@ -48,19 +58,24 @@ class MainViewModel @Inject constructor(
                 isLoadingMore = true
                 setError(null)
 
-                val newMovies = getMoviesUseCase()
-
-                // Prevent duplicates
-                val uniqueMovies = newMovies.filterNot { fetched ->
-                    allMovies.any { it.id == fetched.id }
+                val newMovies = if (currentSearchQuery.isNotEmpty()) {
+                    searchMoviesUseCase(currentSearchQuery, currentPage, pageSize)
+                } else if (currentGenreFilter != null) {
+                    getMoviesByGenreUseCase(currentGenreFilter, currentPage, pageSize)
+                } else {
+                    getMoviesUseCase(currentPage, pageSize)
                 }
 
-                if (uniqueMovies.isNotEmpty()) {
-                    allMovies.addAll(uniqueMovies)
+                if (newMovies.isNotEmpty()) {
+                    if (currentPage == 1) {
+                        allMovies.clear()
+                    }
+                    allMovies.addAll(newMovies)
                     currentPage++
                 }
 
-                applyCurrentFiltersAndSearch()
+                _movies.postValue(allMovies.toList())
+                updateWishlistCount()
             } catch (e: Exception) {
                 setError(e.message ?: "Unknown error")
             } finally {
@@ -70,33 +85,42 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun filterMovies(query: String) {
+    fun searchMovies(query: String) {
         currentSearchQuery = query
-        applyCurrentFiltersAndSearch()
+        currentPage = 1
+        loadMovies()
     }
 
-    fun applyFilters(filters: Set<String>) {
-        currentFilters = filters
-        applyCurrentFiltersAndSearch()
-    }
-
-    private fun applyCurrentFiltersAndSearch() {
-        val filteredList = allMovies.filter { movie ->
-            val matchesSearch = movie.title.contains(currentSearchQuery, ignoreCase = true)
-            val matchesFilter =
-                currentFilters.isEmpty() || currentFilters.contains(movie.title) // replace with movie.type
-            matchesSearch && matchesFilter
-        }
-
-        _movies.postValue(filteredList)
+    fun filterByGenre(genre: String?) {
+        currentGenreFilter = genre
+        currentPage = 1
+        loadMovies()
     }
 
     fun toggleWishlist(movie: MovieDomainEntity) {
-        val index = allMovies.indexOfFirst { it.id == movie.id }
-        if (index != -1) {
-            val updatedMovie = allMovies[index].copy(isWishlisted = !movie.isWishlisted)
-            allMovies[index] = updatedMovie
-            applyCurrentFiltersAndSearch()
+        viewModelScope.launch {
+            try {
+                toggleWishlistUseCase(movie.id, movie.isWishlisted)
+                // Update the movie in the list
+                val index = allMovies.indexOfFirst { it.id == movie.id }
+                if (index != -1) {
+                    allMovies[index] = movie.copy(isWishlisted = !movie.isWishlisted)
+                    _movies.postValue(allMovies.toList())
+                    updateWishlistCount()
+                }
+            } catch (e: Exception) {
+                setError(e.message ?: "Failed to update wishlist")
+            }
         }
+    }
+
+    private fun updateWishlistCount() {
+        val count = allMovies.count { it.isWishlisted }
+        _wishlistCount.postValue(count)
+    }
+
+    fun refreshMovies() {
+        currentPage = 1
+        loadMovies()
     }
 }

@@ -1,25 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Information -->
     <string name="app_name">MyIMBD</string>
-    <string name="app_logo">App Logo</string>
-    <string name="loading_data">Loading data...</string>
-    <string name="data_loaded">Data loaded successfully!</string>
-    <string name="error_loading_data">Error loading data</string>
-    <string name="search_movies">Search movies</string>
-    <string name="filter_by_genre">Filter by genre</string>
-    <string name="all_genres">All Genres</string>
-    <string name="wishlist">Wishlist</string>
-    <string name="movie_details">Movie Details</string>
-    <string name="add_to_wishlist">Add to wishlist</string>
-    <string name="remove_from_wishlist">Remove from wishlist</string>
-    <string name="director">Director</string>
-    <string name="cast">Cast</string>
-    <string name="genre">Genre</string>
-    <string name="plot">Plot</string>
-    <string name="rating">Rating</string>
-    <string name="year">Year</string>
-    <string name="no_movies_found">No movies found</string>
-    <string name="no_wishlist_items">No wishlist items</string>
-    <string name="error_occurred">An error occurred</string>
-    <string name="retry">Retry</string>
+    <string name="app_description">Modern Movie App</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_movies">Movies</string>
+    <string name="nav_wishlist">Wishlist</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_profile">Profile</string>
+    
+    <!-- Common Actions -->
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_share">Share</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_wishlist">Wishlist</string>
+    <string name="action_add_to_wishlist">Add to Wishlist</string>
+    <string name="action_remove_from_wishlist">Remove from Wishlist</string>
+    <string name="action_view_details">View Details</string>
+    <string name="action_back">Back</string>
+    <string name="action_close">Close</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    
+    <!-- Search and Filter -->
+    <string name="search_hint">Search movies...</string>
+    <string name="search_placeholder">Search by title, actor, or genre</string>
+    <string name="filter_by_genre">Filter by Genre</string>
+    <string name="filter_all_genres">All Genres</string>
+    <string name="filter_action">Action</string>
+    <string name="filter_comedy">Comedy</string>
+    <string name="filter_drama">Drama</string>
+    <string name="filter_horror">Horror</string>
+    <string name="filter_romance">Romance</string>
+    <string name="filter_scifi">Sci-Fi</string>
+    <string name="filter_thriller">Thriller</string>
+    <string name="filter_animation">Animation</string>
+    <string name="filter_documentary">Documentary</string>
+    <string name="filter_fantasy">Fantasy</string>
+    <string name="filter_mystery">Mystery</string>
+    <string name="filter_adventure">Adventure</string>
+    <string name="filter_crime">Crime</string>
+    <string name="filter_family">Family</string>
+    <string name="filter_history">History</string>
+    <string name="filter_music">Music</string>
+    <string name="filter_war">War</string>
+    <string name="filter_western">Western</string>
+    
+    <!-- View Types -->
+    <string name="view_type_list">List View</string>
+    <string name="view_type_grid">Grid View</string>
+    <string name="view_type_compact">Compact View</string>
+    <string name="view_type_detailed">Detailed View</string>
+    
+    <!-- Movie Details -->
+    <string name="movie_details_title">Movie Details</string>
+    <string name="movie_title">Title</string>
+    <string name="movie_year">Year</string>
+    <string name="movie_runtime">Runtime</string>
+    <string name="movie_director">Director</string>
+    <string name="movie_actors">Actors</string>
+    <string name="movie_genres">Genres</string>
+    <string name="movie_plot">Plot</string>
+    <string name="movie_rating">Rating</string>
+    <string name="movie_poster">Poster</string>
+    <string name="movie_trailer">Trailer</string>
+    <string name="movie_reviews">Reviews</string>
+    <string name="movie_similar">Similar Movies</string>
+    <string name="movie_cast">Cast</string>
+    <string name="movie_crew">Crew</string>
+    <string name="movie_awards">Awards</string>
+    <string name="movie_box_office">Box Office</string>
+    <string name="movie_language">Language</string>
+    <string name="movie_country">Country</string>
+    <string name="movie_release_date">Release Date</string>
+    <string name="movie_dvd_release">DVD Release</string>
+    <string name="movie_website">Website</string>
+    <string name="movie_production">Production</string>
+    <string name="movie_distributor">Distributor</string>
+    
+    <!-- Wishlist -->
+    <string name="wishlist_title">My Wishlist</string>
+    <string name="wishlist_empty_title">No movies in wishlist</string>
+    <string name="wishlist_empty_subtitle">Start adding movies to your wishlist to see them here</string>
+    <string name="wishlist_count">%d movies</string>
+    <string name="wishlist_added">Added to wishlist</string>
+    <string name="wishlist_removed">Removed from wishlist</string>
+    <string name="wishlist_clear_all">Clear All</string>
+    <string name="wishlist_clear_confirm">Are you sure you want to clear your wishlist?</string>
+    
+    <!-- Loading and Error States -->
     <string name="loading">Loading...</string>
+    <string name="loading_movies">Loading movies...</string>
+    <string name="loading_movie_details">Loading movie details...</string>
+    <string name="loading_wishlist">Loading wishlist...</string>
+    <string name="error_loading_movies">Error loading movies</string>
+    <string name="error_loading_movie_details">Error loading movie details</string>
+    <string name="error_loading_wishlist">Error loading wishlist</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_server">Server error</string>
+    <string name="error_timeout">Request timeout</string>
+    <string name="error_not_found">Movie not found</string>
+    <string name="error_empty_results">No movies found</string>
+    <string name="error_try_again">Please try again</string>
+    
+    <!-- Empty States -->
+    <string name="empty_state_title">No movies found</string>
+    <string name="empty_state_subtitle">Try adjusting your search or filter criteria</string>
+    <string name="empty_search_title">No search results</string>
+    <string name="empty_search_subtitle">Try different keywords or check your spelling</string>
+    <string name="empty_filter_title">No movies match your filter</string>
+    <string name="empty_filter_subtitle">Try selecting different genres or criteria</string>
+    
+    <!-- Success Messages -->
+    <string name="success_movie_added">Movie added to wishlist</string>
+    <string name="success_movie_removed">Movie removed from wishlist</string>
+    <string name="success_data_loaded">Data loaded successfully</string>
+    <string name="success_search_completed">Search completed</string>
+    <string name="success_filter_applied">Filter applied</string>
+    
+    <!-- Confirmation Dialogs -->
+    <string name="confirm_remove_wishlist">Remove from wishlist?</string>
+    <string name="confirm_clear_wishlist">Clear entire wishlist?</string>
+    <string name="confirm_exit_app">Exit app?</string>
+    <string name="confirm_discard_changes">Discard changes?</string>
+    
+    <!-- Splash Screen -->
+    <string name="splash_title">MyIMBD</string>
+    <string name="splash_subtitle">Your Movie Companion</string>
+    <string name="splash_loading">Loading your movies...</string>
+    <string name="splash_checking_data">Checking for updates...</string>
+    <string name="splash_downloading">Downloading movie data...</string>
+    
+    <!-- Pagination -->
+    <string name="pagination_loading_more">Loading more movies...</string>
+    <string name="pagination_end_reached">You\'ve reached the end</string>
+    <string name="pagination_pull_to_refresh">Pull to refresh</string>
+    <string name="pagination_swipe_to_load">Swipe to load more</string>
+    
+    <!-- Accessibility -->
+    <string name="accessibility_movie_poster">Movie poster for %s</string>
+    <string name="accessibility_wishlist_button">Wishlist button for %s</string>
+    <string name="accessibility_search_button">Search button</string>
+    <string name="accessibility_filter_button">Filter button</string>
+    <string name="accessibility_view_toggle">Toggle view type</string>
+    <string name="accessibility_movie_item">Movie item %s</string>
+    <string name="accessibility_loading_indicator">Loading indicator</string>
+    <string name="accessibility_error_message">Error message</string>
+    <string name="accessibility_empty_state">Empty state message</string>
+    
+    <!-- Content Descriptions -->
+    <string name="content_description_app_icon">App icon</string>
+    <string name="content_description_movie_poster">Movie poster</string>
+    <string name="content_description_wishlist_icon">Wishlist icon</string>
+    <string name="content_description_search_icon">Search icon</string>
+    <string name="content_description_filter_icon">Filter icon</string>
+    <string name="content_description_menu_icon">Menu icon</string>
+    <string name="content_description_back_icon">Back icon</string>
+    <string name="content_description_close_icon">Close icon</string>
+    <string name="content_description_share_icon">Share icon</string>
+    <string name="content_description_rating_star">Rating star</string>
+    <string name="content_description_play_button">Play button</string>
+    <string name="content_description_pause_button">Pause button</string>
+    <string name="content_description_fullscreen_button">Fullscreen button</string>
+    
+    <!-- Format Strings -->
+    <string name="format_movie_year">%s</string>
+    <string name="format_movie_runtime">%s min</string>
+    <string name="format_movie_rating">%.1f/10</string>
+    <string name="format_movie_genres">%s</string>
+    <string name="format_movie_cast">%s</string>
+    <string name="format_movie_director">Directed by %s</string>
+    <string name="format_movie_actors">Starring %s</string>
+    <string name="format_wishlist_count">%d movies</string>
+    <string name="format_search_results" formatted="false">%d results for "%s"</string>
+    <string name="format_filter_results" formatted="false">%d movies in %s</string>
+    
+    <!-- Time and Date -->
+    <string name="time_minutes">%d min</string>
+    <string name="time_hours_minutes" formatted="false">%d hr %d min</string>
+    <string name="date_format">MMM dd, yyyy</string>
+    <string name="date_format_short">MMM yyyy</string>
+    <string name="date_format_long">EEEE, MMMM dd, yyyy</string>
+    
+    <!-- Units -->
+    <string name="unit_minutes">min</string>
+    <string name="unit_hours">hr</string>
+    <string name="unit_movies">movies</string>
+    <string name="unit_results">results</string>
+    <string name="unit_genres">genres</string>
+    <string name="unit_actors">actors</string>
+    
+    <!-- Placeholders -->
+    <string name="placeholder_movie_title">Movie Title</string>
+    <string name="placeholder_movie_year">Year</string>
+    <string name="placeholder_movie_director">Director</string>
+    <string name="placeholder_movie_actors">Actors</string>
+    <string name="placeholder_movie_plot">Plot description</string>
+    <string name="placeholder_movie_poster">No poster available</string>
+    <string name="placeholder_search_query">Enter movie title, actor, or genre</string>
+    <string name="placeholder_filter_genre">Select genre</string>
+    
+    <!-- Debug and Development -->
+    <string name="debug_info">Debug Info</string>
+    <string name="debug_version">Version: %s</string>
+    <string name="debug_build">Build: %s</string>
+    <string name="debug_device">Device: %s</string>
+    <string name="debug_android_version">Android: %s</string>
+    
 </resources>

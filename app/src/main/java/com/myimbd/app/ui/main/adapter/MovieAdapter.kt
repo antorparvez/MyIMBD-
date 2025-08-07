@@ -1,5 +1,7 @@
 package com.myimbd.app.ui.main.adapter
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -66,6 +68,7 @@ class MovieAdapter(
 
             binding.root.setOnClickListener { onMovieClick(movie) }
             binding.wishlistButton.setOnClickListener {
+                animateWishlistButton(binding.wishlistButton)
                 onWishlistClick(movie, binding.wishlistButton)
             }
         }
@@ -88,9 +91,21 @@ class MovieAdapter(
 
             binding.root.setOnClickListener { onMovieClick(movie) }
             binding.wishlistButton.setOnClickListener {
+                animateWishlistButton(binding.wishlistButton)
                 onWishlistClick(movie, binding.wishlistButton)
             }
         }
+    }
+
+    private fun animateWishlistButton(button: ImageView) {
+        val scaleX = ObjectAnimator.ofFloat(button, "scaleX", 1f, 1.2f, 1f)
+        val scaleY = ObjectAnimator.ofFloat(button, "scaleY", 1f, 1.2f, 1f)
+        val alpha = ObjectAnimator.ofFloat(button, "alpha", 1f, 0.7f, 1f)
+
+        val animatorSet = AnimatorSet()
+        animatorSet.playTogether(scaleX, scaleY, alpha)
+        animatorSet.duration = 300
+        animatorSet.start()
     }
 
     class MovieDiffCallback : DiffUtil.ItemCallback<MovieDomainEntity>() {
