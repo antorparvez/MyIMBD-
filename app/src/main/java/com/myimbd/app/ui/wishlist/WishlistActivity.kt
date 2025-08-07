@@ -40,13 +40,13 @@ class WishlistActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         movieAdapter = MovieAdapter(
-            currentViewType = ViewType.LIST,
+            //currentViewType = ViewType.LIST,
             onMovieClick = { movie ->
                 val intent = Intent(this, MovieDetailsActivity::class.java)
                 intent.putExtra("movie_id", movie.id)
                 startActivity(intent)
             },
-            onWishlistClick = { movie, _ ->
+            onWishlistClick = { movie,  ->
                 viewModel.removeFromWishlist(movie.id)
             }
         )

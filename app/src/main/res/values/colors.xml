@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Colors -->
+    <!-- Light Theme Colors -->
     <color name="primary_color">#1976D2</color>
     <color name="primary_dark">#1565C0</color>
     <color name="primary_light">#BBDEFB</color>
+    <color name="primary_color_dark">#90CAF9</color>
+    <color name="primary_light_dark">#E3F2FD</color>
     
     <!-- Secondary/Accent Colors -->
     <color name="accent_color">#FF5722</color>
     <color name="accent_light">#FFAB91</color>
     <color name="accent_dark">#D84315</color>
+    <color name="accent_color_dark">#FF8A65</color>
+    <color name="accent_light_dark">#FFCCBC</color>
     <color name="secondary_color">#FF5722</color>
     
     <!-- Background Colors -->
@@ -37,6 +41,10 @@
     <color name="chip_unselected">#F5F5F5</color>
     <color name="chip_unselected_text">#757575</color>
     <color name="chip_icon_color">#9E9E9E</color>
+    <color name="chip_selected_dark">#1E3A5F</color>
+    <color name="chip_selected_text_dark">#90CAF9</color>
+    <color name="chip_unselected_dark">#2A2A2A</color>
+    <color name="chip_unselected_text_dark">#B3FFFFFF</color>
     
     <!-- Card Colors -->
     <color name="card_stroke_color">#E0E0E0</color>

@@ -44,13 +44,13 @@ class MoviesListFragment :
 
     private fun setupAdapters() {
         movieAdapter = MovieAdapter(
-            currentViewType = currentViewType,
+           // currentViewType = currentViewType,
             onMovieClick = { movie ->
                 val intent = Intent(requireContext(), MovieDetailsActivity::class.java)
                 intent.putExtra("movie_id", movie.id)
                 startActivity(intent)
             },
-            onWishlistClick = { movie, imageView ->
+            onWishlistClick = { movie ->
                 viewModel.toggleWishlist(movie)
             }
         )
@@ -130,7 +130,7 @@ class MoviesListFragment :
                 TYPE_HEADER -> headerAdapter.onCreateViewHolder(parent, viewType)
                 TYPE_MOVIE -> movieAdapter.onCreateViewHolder(
                     parent,
-                    movieAdapter.currentViewType.ordinal
+                    1
                 )
 
                 else -> throw IllegalArgumentException("Invalid view type")

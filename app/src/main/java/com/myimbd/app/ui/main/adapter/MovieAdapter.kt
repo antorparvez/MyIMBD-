@@ -17,26 +17,27 @@ import com.myimbd.domain.model.MovieDomainEntity
 enum class ViewType { LIST, GRID }
 
 class MovieAdapter(
-    var currentViewType: ViewType = ViewType.GRID,
     private val onMovieClick: (MovieDomainEntity) -> Unit,
-    private val onWishlistClick: (MovieDomainEntity, ImageView) -> Unit
+    private val onWishlistClick: (MovieDomainEntity) -> Unit
 ) : ListAdapter<MovieDomainEntity, RecyclerView.ViewHolder>(MovieDiffCallback()) {
 
+    private var currentViewType: ViewType = ViewType.LIST
+
     fun setViewType(viewType: ViewType) {
-        currentViewType = viewType
-        notifyDataSetChanged()
+        if (currentViewType != viewType) {
+            currentViewType = viewType
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemViewType(position: Int): Int = currentViewType.ordinal
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (ViewType.values()[viewType] == ViewType.LIST) {
-            val binding =
-                ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             ListViewHolder(binding)
         } else {
-            val binding =
-                ItemMovieGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = ItemMovieGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             GridViewHolder(binding)
         }
     }
@@ -59,6 +60,7 @@ class MovieAdapter(
             Glide.with(binding.moviePoster.context)
                 .load(movie.poster)
                 .placeholder(R.drawable.ic_movie)
+                .error(R.drawable.ic_movie)
                 .into(binding.moviePoster)
 
             binding.wishlistButton.setImageResource(
@@ -69,7 +71,7 @@ class MovieAdapter(
             binding.root.setOnClickListener { onMovieClick(movie) }
             binding.wishlistButton.setOnClickListener {
                 animateWishlistButton(binding.wishlistButton)
-                onWishlistClick(movie, binding.wishlistButton)
+                onWishlistClick(movie)
             }
         }
     }
@@ -82,6 +84,7 @@ class MovieAdapter(
             Glide.with(binding.moviePoster.context)
                 .load(movie.poster)
                 .placeholder(R.drawable.ic_movie)
+                .error(R.drawable.ic_movie)
                 .into(binding.moviePoster)
 
             binding.wishlistButton.setImageResource(
@@ -92,7 +95,7 @@ class MovieAdapter(
             binding.root.setOnClickListener { onMovieClick(movie) }
             binding.wishlistButton.setOnClickListener {
                 animateWishlistButton(binding.wishlistButton)
-                onWishlistClick(movie, binding.wishlistButton)
+                onWishlistClick(movie)
             }
         }
     }
