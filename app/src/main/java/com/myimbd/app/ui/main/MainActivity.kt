@@ -2,6 +2,8 @@ package com.myimbd.app.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupNavigationDrawer()
         setupClickListeners()
         setupObservers()
+        setupSearchListener()
         
         // Load initial fragment
         if (savedInstanceState == null) {
@@ -84,18 +87,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             viewModel.clearSearch()
             hideSearchBar()
         }
+    }
 
-        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
-                val query = binding.searchEditText.text.toString()
-                if (query.isNotEmpty()) {
-                    viewModel.searchMovies(query)
-                    hideSearchBar()
-                }
-                return@setOnEditorActionListener true
+    private fun setupSearchListener() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = s?.toString() ?: ""
+                viewModel.searchMovies(query)
             }
-            false
-        }
+        })
     }
 
     private fun setupObservers() {

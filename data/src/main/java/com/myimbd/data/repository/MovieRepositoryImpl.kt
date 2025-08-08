@@ -1,5 +1,6 @@
 package com.myimbd.data.repository
 
+import android.util.Log
 import com.myimbd.data.local.MovieDao
 import com.myimbd.data.mapper.toDomainEntity
 import com.myimbd.data.mapper.toEntity
@@ -46,6 +47,7 @@ class MovieRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveMovies(movies: List<MovieDomainEntity>) {
+        Log.d("TAG", "saveMovies: ${movies.size}")
         val movieEntities = movies.map { it.toEntity() }
         movieDao.insertMovies(movieEntities)
     }

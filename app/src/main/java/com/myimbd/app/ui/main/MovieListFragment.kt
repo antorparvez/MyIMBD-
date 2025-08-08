@@ -1,19 +1,16 @@
 package com.myimbd.app.ui.main
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.myimbd.app.R
+import com.myimbd.app.base.BaseFragment
 import com.myimbd.app.databinding.FragmentMovieListBinding
 import com.myimbd.app.ui.main.adapter.MovieAdapter
 import com.myimbd.app.ui.main.adapter.ViewType
@@ -21,40 +18,40 @@ import com.myimbd.app.ui.main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieListFragment : Fragment() {
+class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
+    FragmentMovieListBinding::inflate
+) {
 
-    private var _binding: FragmentMovieListBinding? = null
-    private val binding get() = _binding!!
-    
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var movieAdapter: MovieAdapter
+    private var isPaginationInProgress = false
+    private var lastPaginationTime = 0L
+    private val paginationDelay = 1000L // 1 second delay between pagination calls
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentMovieListBinding.inflate(inflater, container, false)
-        return binding.root
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Load movies only the first time the fragment is created
+        if (savedInstanceState == null) {
+            viewModel.loadMovies()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupRecyclerView()
         setupChips()
         setupClickListeners()
         setupObservers()
-        setupPagination()
+        setupRecyclerViewPagination()
         
-        // Load initial data
-        viewModel.loadMovies()
+        // Observe base ViewModel states
+        observeBaseViewModel(viewModel)
     }
 
     private fun setupRecyclerView() {
         movieAdapter = MovieAdapter(
             onMovieClick = { movie ->
-                // Navigate to details
                 (activity as? MainActivity)?.navigateToMovieDetails(movie.id.toString())
             },
             onWishlistClick = { movie ->
@@ -62,31 +59,30 @@ class MovieListFragment : Fragment() {
             }
         )
 
-        binding.moviesRecyclerView.apply {
-            adapter = movieAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            addItemDecoration(object : RecyclerView.ItemDecoration() {
-                override fun getItemOffsets(
-                    outRect: android.graphics.Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val position = parent.getChildAdapterPosition(view)
-                    if (position != RecyclerView.NO_POSITION) {
-                        outRect.top = 8
-                        outRect.bottom = 8
-                        outRect.left = 8
-                        outRect.right = 8
-                    }
-                }
-            })
-        }
+        // Configure RecyclerView for optimal performance
+        binding.moviesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.moviesRecyclerView.adapter = movieAdapter
+        binding.moviesRecyclerView.setHasFixedSize(false)
+        binding.moviesRecyclerView.itemAnimator = null // Disable animations for smoother scrolling
+
+        // Add item decoration for spacing
+        binding.moviesRecyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                outRect.set(8, 8, 8, 8)
+            }
+        })
+
+        movieAdapter.setViewType(ViewType.LIST)
+        binding.viewToggleButton.setIconResource(R.drawable.ic_view_grid)
     }
 
     private fun setupChips() {
-        binding.genreChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+       /* binding.genreChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             val selectedChip = checkedIds.firstOrNull()?.let { group.findViewById<Chip>(it) }
             when (selectedChip?.id) {
                 R.id.chipAll -> viewModel.filterByGenre(null)
@@ -98,7 +94,7 @@ class MovieListFragment : Fragment() {
                 R.id.chipAdventure -> viewModel.filterByGenre("Adventure")
                 R.id.chipAnimation -> viewModel.filterByGenre("Animation")
             }
-        }
+        }*/
     }
 
     private fun setupClickListeners() {
@@ -107,27 +103,36 @@ class MovieListFragment : Fragment() {
         }
     }
 
-    private fun setupPagination() {
+    private fun setupRecyclerViewPagination() {
         binding.moviesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 
-                val layoutManager = recyclerView.layoutManager
-                if (layoutManager is LinearLayoutManager) {
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                    
-                    // Check if we should load more based on position
-                    if (viewModel.shouldLoadMore(lastVisibleItemPosition)) {
-                        viewModel.loadMoreMovies()
-                    }
-                } else if (layoutManager is GridLayoutManager) {
-                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                    
-                    // Check if we should load more based on position
-                    if (viewModel.shouldLoadMore(lastVisibleItemPosition)) {
-                        viewModel.loadMoreMovies()
+                if (dy > 0) { // Scrolling down
+                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                    layoutManager?.let { manager ->
+                        val visibleItemCount = manager.childCount
+                        val totalItemCount = manager.itemCount
+                        val firstVisibleItemPosition = manager.findFirstVisibleItemPosition()
+                        
+                        // Check if we're near the end (within 5 items)
+                        val shouldLoadMore = (visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5 &&
+                                firstVisibleItemPosition >= 0 &&
+                                totalItemCount >= 0 &&
+                                totalItemCount > 0
+                        
+                        val currentTime = System.currentTimeMillis()
+                        val canLoadMore = currentTime - lastPaginationTime > paginationDelay
+                        
+                        if (shouldLoadMore && 
+                            viewModel.hasMoreData.value == true && 
+                            viewModel.isLoading.value != true &&
+                            !isPaginationInProgress &&
+                            canLoadMore) {
+                            isPaginationInProgress = true
+                            lastPaginationTime = currentTime
+                            viewModel.loadMoreMovies()
+                        }
                     }
                 }
             }
@@ -136,9 +141,11 @@ class MovieListFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
-            movieAdapter.submitList(movies.toMutableList())
-            updateEmptyState(movies.isEmpty())
-            updateResultsText(movies.size)
+            // Use submitList with DiffUtil for smooth updates
+            movieAdapter.submitList(movies.toMutableList()) {
+                updateEmptyState(movies.isEmpty())
+                updateResultsText(movies.size)
+            }
         }
 
         viewModel.currentViewType.observe(viewLifecycleOwner) { viewType ->
@@ -146,49 +153,61 @@ class MovieListFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingLayout.isVisible = isLoading && viewModel.movies.value?.isEmpty() == true
-            binding.paginationLoadingLayout.isVisible = isLoading && viewModel.movies.value?.isNotEmpty() == true
+            handleLoadingState(isLoading)
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
-                // Show error message (you can implement a snackbar or toast)
+                showError(it)
+                isPaginationInProgress = false
             }
         }
+    }
 
-        viewModel.hasMoreData.observe(viewLifecycleOwner) { hasMore ->
-            // You can show/hide a "Load More" button or handle pagination UI here
+    override fun handleLoadingState(isLoading: Boolean) {
+        // Show main loading layout only when there are no movies (initial load)
+        binding.loadingLayout.isVisible = isLoading && (viewModel.movies.value?.isEmpty() == true)
+        
+        // Show pagination loading when there are existing movies (loading more)
+        binding.paginationLoadingLayout.isVisible = isLoading && (viewModel.movies.value?.isNotEmpty() == true)
+        
+        // Reset pagination flag when loading is complete
+        if (!isLoading) {
+            isPaginationInProgress = false
         }
+    }
+
+    override fun showError(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Retry") {
+                viewModel.refreshMovies()
+            }
+            .show()
     }
 
     private fun updateViewType(viewType: ViewType) {
-        val layoutManager = when (viewType) {
-            ViewType.LIST -> LinearLayoutManager(requireContext())
-            ViewType.GRID -> GridLayoutManager(requireContext(), 2)
+        if (movieAdapter.currentViewType != viewType) {
+            val layoutManager = when (viewType) {
+                ViewType.LIST -> LinearLayoutManager(requireContext())
+                ViewType.GRID -> GridLayoutManager(requireContext(), 2)
+            }
+            binding.moviesRecyclerView.layoutManager = layoutManager
+            movieAdapter.setViewType(viewType)
+
+            val iconRes = if (viewType == ViewType.LIST) {
+                R.drawable.ic_view_grid
+            } else {
+                R.drawable.ic_view_list
+            }
+            binding.viewToggleButton.setIconResource(iconRes)
         }
-        
-        binding.moviesRecyclerView.layoutManager = layoutManager
-        movieAdapter.setViewType(viewType)
-        
-        // Update icon
-        val iconRes = if (viewType == ViewType.LIST) {
-            R.drawable.ic_view_grid
-        } else {
-            R.drawable.ic_view_list
-        }
-        binding.viewToggleButton.setIconResource(iconRes)
     }
 
     private fun updateEmptyState(isEmpty: Boolean) {
-        binding.emptyStateLayout.isVisible = isEmpty && !viewModel.isLoading.value!!
+        binding.emptyStateLayout.isVisible = isEmpty && (viewModel.isLoading.value == false)
     }
 
     private fun updateResultsText(count: Int) {
         binding.resultsText.text = "Movies ($count)"
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

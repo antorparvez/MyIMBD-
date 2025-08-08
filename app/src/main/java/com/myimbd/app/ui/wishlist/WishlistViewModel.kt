@@ -2,8 +2,8 @@ package com.myimbd.app.ui.wishlist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myimbd.app.base.BaseViewModel
 import com.myimbd.domain.model.MovieDomainEntity
 import com.myimbd.domain.usecase.GetWishlistedMoviesUseCase
 import com.myimbd.domain.usecase.ToggleWishlistUseCase
@@ -15,24 +15,22 @@ import javax.inject.Inject
 class WishlistViewModel @Inject constructor(
     private val getWishlistedMoviesUseCase: GetWishlistedMoviesUseCase,
     private val toggleWishlistUseCase: ToggleWishlistUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _wishlistedMovies = MutableLiveData<List<MovieDomainEntity>>()
     val wishlistedMovies: LiveData<List<MovieDomainEntity>> = _wishlistedMovies
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
     fun loadWishlistedMovies() {
         viewModelScope.launch {
             try {
-                _isLoading.value = true
+                setLoading(true)
+                setError(null)
                 val movies = getWishlistedMoviesUseCase()
                 _wishlistedMovies.value = movies
             } catch (e: Exception) {
-                // Handle error
+                setError(e.message ?: "Failed to load wishlist")
             } finally {
-                _isLoading.value = false
+                setLoading(false)
             }
         }
     }
@@ -43,7 +41,7 @@ class WishlistViewModel @Inject constructor(
                 toggleWishlistUseCase(movieId, true)
                 loadWishlistedMovies() // Reload the list
             } catch (e: Exception) {
-                // Handle error
+                setError(e.message ?: "Failed to remove from wishlist")
             }
         }
     }

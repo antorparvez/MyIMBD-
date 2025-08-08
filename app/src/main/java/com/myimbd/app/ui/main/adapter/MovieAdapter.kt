@@ -21,24 +21,31 @@ class MovieAdapter(
     private val onWishlistClick: (MovieDomainEntity) -> Unit
 ) : ListAdapter<MovieDomainEntity, RecyclerView.ViewHolder>(MovieDiffCallback()) {
 
-    private var currentViewType: ViewType = ViewType.LIST
+    var currentViewType: ViewType = ViewType.LIST
+        private set
 
     fun setViewType(viewType: ViewType) {
         if (currentViewType != viewType) {
             currentViewType = viewType
-            notifyDataSetChanged()
+            // Use a more efficient approach for view type changes
+            val currentList = currentList.toMutableList()
+            if (currentList.isNotEmpty()) {
+                submitList(null) {
+                    submitList(currentList)
+                }
+            }
         }
     }
 
-    override fun getItemViewType(position: Int): Int = currentViewType.ordinal
+    override fun getItemViewType(position: Int): Int =
+        if (currentViewType == ViewType.LIST) 0 else 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (ViewType.values()[viewType] == ViewType.LIST) {
-            val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            ListViewHolder(binding)
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == 0) {
+            ListViewHolder(ItemMovieBinding.inflate(inflater, parent, false))
         } else {
-            val binding = ItemMovieGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            GridViewHolder(binding)
+            GridViewHolder(ItemMovieGridBinding.inflate(inflater, parent, false))
         }
     }
 
@@ -50,80 +57,79 @@ class MovieAdapter(
         }
     }
 
+    // --- ViewHolders ---
     inner class ListViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(movie: MovieDomainEntity) {
-            binding.movieTitle.text = movie.title
-            binding.movieYear.text = movie.year
-            binding.movieDirector.text = movie.director ?: ""
+            with(binding) {
+                movieTitle.text = movie.title
+                movieYear.text = movie.year
+                movieDirector.text = movie.director.orEmpty()
 
-            Glide.with(binding.moviePoster.context)
-                .load(movie.posterUrl)
-                .placeholder(R.drawable.ic_movie)
-                .error(R.drawable.ic_movie)
-                .into(binding.moviePoster)
+                loadPoster(movie.posterUrl, moviePoster)
+                wishlistButton.setImageResource(
+                    if (movie.isWishlisted) R.drawable.ic_wishlist_filled
+                    else R.drawable.ic_wishlist
+                )
 
-            binding.wishlistButton.setImageResource(
-                if (movie.isWishlisted) R.drawable.ic_wishlist_filled
-                else R.drawable.ic_wishlist
-            )
-
-            binding.root.setOnClickListener { onMovieClick(movie) }
-            binding.wishlistButton.setOnClickListener {
-                animateWishlistButton(binding.wishlistButton)
-                onWishlistClick(movie)
+                root.setOnClickListener { onMovieClick(movie) }
+                wishlistButton.setOnClickListener {
+                    animateWishlistButton(wishlistButton)
+                    onWishlistClick(movie)
+                }
             }
         }
     }
 
     inner class GridViewHolder(private val binding: ItemMovieGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(movie: MovieDomainEntity) {
-            binding.movieTitle.text = movie.title
+            with(binding) {
+                movieTitle.text = movie.title
+                loadPoster(movie.posterUrl, moviePoster)
+                wishlistButton.setImageResource(
+                    if (movie.isWishlisted) R.drawable.ic_wishlist_filled
+                    else R.drawable.ic_wishlist
+                )
 
-            Glide.with(binding.moviePoster.context)
-                .load(movie.posterUrl)
-                .placeholder(R.drawable.ic_movie)
-                .error(R.drawable.ic_movie)
-                .into(binding.moviePoster)
-
-            binding.wishlistButton.setImageResource(
-                if (movie.isWishlisted) R.drawable.ic_wishlist_filled
-                else R.drawable.ic_wishlist
-            )
-
-            binding.root.setOnClickListener { onMovieClick(movie) }
-            binding.wishlistButton.setOnClickListener {
-                animateWishlistButton(binding.wishlistButton)
-                onWishlistClick(movie)
+                root.setOnClickListener { onMovieClick(movie) }
+                wishlistButton.setOnClickListener {
+                    animateWishlistButton(wishlistButton)
+                    onWishlistClick(movie)
+                }
             }
         }
     }
 
-    private fun animateWishlistButton(button: ImageView) {
-        val scaleX = ObjectAnimator.ofFloat(button, "scaleX", 1f, 1.2f, 1f)
-        val scaleY = ObjectAnimator.ofFloat(button, "scaleY", 1f, 1.2f, 1f)
-        val alpha = ObjectAnimator.ofFloat(button, "alpha", 1f, 0.7f, 1f)
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playTogether(scaleX, scaleY, alpha)
-        animatorSet.duration = 300
-        animatorSet.start()
+    // --- Helpers ---
+    private fun loadPoster(url: String?, imageView: ImageView) {
+        Glide.with(imageView.context)
+            .load(url)
+            .placeholder(R.drawable.ic_movie)
+            .error(R.drawable.ic_movie)
+            .into(imageView)
     }
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<MovieDomainEntity>() {
-        override fun areItemsTheSame(
-            oldItem: MovieDomainEntity,
-            newItem: MovieDomainEntity
-        ): Boolean {
-            return oldItem.id == newItem.id
+    private fun animateWishlistButton(button: ImageView) {
+        AnimatorSet().apply {
+            playTogether(
+                ObjectAnimator.ofFloat(button, "scaleX", 1f, 1.2f, 1f),
+                ObjectAnimator.ofFloat(button, "scaleY", 1f, 1.2f, 1f),
+                ObjectAnimator.ofFloat(button, "alpha", 1f, 0.7f, 1f)
+            )
+            duration = 300
+            start()
         }
+    }
 
-        override fun areContentsTheSame(
-            oldItem: MovieDomainEntity,
-            newItem: MovieDomainEntity
-        ): Boolean {
-            return oldItem == newItem
-        }
+    // --- DiffUtil ---
+    class MovieDiffCallback : DiffUtil.ItemCallback<MovieDomainEntity>() {
+        override fun areItemsTheSame(oldItem: MovieDomainEntity, newItem: MovieDomainEntity) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: MovieDomainEntity, newItem: MovieDomainEntity) =
+            oldItem == newItem
     }
 }

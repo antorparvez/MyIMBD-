@@ -2,8 +2,8 @@ package com.myimbd.app.ui.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.myimbd.app.base.BaseViewModel
 import com.myimbd.domain.model.MovieDomainEntity
 import com.myimbd.domain.usecase.GetMovieByIdUseCase
 import com.myimbd.domain.usecase.ToggleWishlistUseCase
@@ -15,24 +15,22 @@ import javax.inject.Inject
 class MovieDetailsViewModel @Inject constructor(
     private val getMovieByIdUseCase: GetMovieByIdUseCase,
     private val toggleWishlistUseCase: ToggleWishlistUseCase
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _movie = MutableLiveData<MovieDomainEntity?>()
     val movie: LiveData<MovieDomainEntity?> = _movie
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
     fun loadMovie(movieId: Int) {
         viewModelScope.launch {
             try {
-                _isLoading.value = true
+                setLoading(true)
+                setError(null)
                 val movie = getMovieByIdUseCase(movieId)
                 _movie.value = movie
             } catch (e: Exception) {
-                // Handle error
+                setError(e.message ?: "Failed to load movie details")
             } finally {
-                _isLoading.value = false
+                setLoading(false)
             }
         }
     }
@@ -47,7 +45,7 @@ class MovieDetailsViewModel @Inject constructor(
                     loadMovie(movieId)
                 }
             } catch (e: Exception) {
-                // Handle error
+                setError(e.message ?: "Failed to update wishlist")
             }
         }
     }
