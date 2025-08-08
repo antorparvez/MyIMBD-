@@ -5,8 +5,10 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import android.util.TypedValue
 import com.myimbd.app.R
 import com.myimbd.app.databinding.ActivityMovieDetailsBinding
+import com.myimbd.app.util.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,9 +18,15 @@ class MovieDetailsActivity : AppCompatActivity() {
     private val viewModel: MovieDetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applySavedTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMovieDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Ensure status bar uses primary color on this screen
+        val typedValue = TypedValue()
+        theme.resolveAttribute(R.color.primary_color, typedValue, true)
+        window.statusBarColor = typedValue.data
 
         setupToolbar()
         setupObservers()

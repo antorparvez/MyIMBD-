@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_header_background">
+    android:background="?attr/colorBackground"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:id="@+id/logo"
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="MyIMBD"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorOnBackground"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
@@ -48,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
         android:gravity="center"
-        android:textColor="@android:color/white"
+        android:textColor="?attr/colorOnBackground"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

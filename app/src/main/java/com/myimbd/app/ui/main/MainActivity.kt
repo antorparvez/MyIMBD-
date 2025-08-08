@@ -14,12 +14,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SwitchCompat
 import com.google.android.material.navigation.NavigationView
 import com.myimbd.app.R
 import com.myimbd.app.databinding.ActivityMainBinding
 import com.myimbd.app.ui.details.MovieDetailsActivity
 import com.myimbd.app.ui.main.viewmodel.MainViewModel
 import com.myimbd.app.ui.wishlist.WishlistActivity
+import com.myimbd.app.util.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private var isDarkTheme = false
+    private lateinit var themeSwitch: SwitchCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +56,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setupNavigationDrawer() {
         binding.navigationView.setNavigationItemSelectedListener(this)
+        val themeMenuItem = binding.navigationView.menu.findItem(R.id.nav_theme)
+        themeSwitch = SwitchCompat(this)
+        themeSwitch.isChecked = ThemeManager.isDarkModeEnabled(this)
+        themeMenuItem.actionView = themeSwitch
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            ThemeManager.setDarkMode(this, isChecked)
+            // Apply immediately and recreate this activity for full UI refresh
+            delegate.applyDayNight()
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            binding.drawerLayout.post { recreate() }
+        }
     }
 
     private fun setupClickListeners() {
@@ -121,12 +134,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun toggleTheme() {
-        isDarkTheme = !isDarkTheme
-        if (isDarkTheme) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
+        val newValue = !ThemeManager.isDarkModeEnabled(this)
+        ThemeManager.setDarkMode(this, newValue)
+        delegate.applyDayNight()
+        if (::themeSwitch.isInitialized) themeSwitch.isChecked = newValue
+        binding.drawerLayout.post { recreate() }
     }
 
     private fun updateWishlistBadge(count: Int) {
@@ -164,7 +176,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return true
             }
             R.id.nav_theme -> {
-                toggleTheme()
+                if (::themeSwitch.isInitialized) {
+                    themeSwitch.toggle()
+                } else {
+                    toggleTheme()
+                }
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }

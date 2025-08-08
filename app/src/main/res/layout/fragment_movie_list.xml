@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="?attr/colorBackground"
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
 
     <!-- Filter Section (Chips etc) -->
     <com.google.android.material.card.MaterialCardView
@@ -64,6 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Movies (0)"
+            android:paddingLeft="16dp"
             android:textColor="?attr/colorOnBackground"
             android:textSize="18sp"
             android:textStyle="bold" />

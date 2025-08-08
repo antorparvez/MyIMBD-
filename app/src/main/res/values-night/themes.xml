@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Night variant of the main app theme (same name as day theme for automatic switching) -->
+    <style name="Theme.MyIMBDApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary Colors (dark variants) -->
+        <item name="colorPrimary">@color/primary_color_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_light_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary Colors -->
+        <item name="colorSecondary">@color/accent_color_dark</item>
+        <item name="colorSecondaryVariant">@color/accent_light_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Surface/Background -->
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorBackground">@color/background_dark</item>
+        <item name="colorOnBackground">@color/text_primary_dark</item>
+
+        <!-- Status Bar / Nav Bar -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o">false</item>
+    </style>
+
+    <!-- Night Splash theme variant -->
+    <style name="Theme.MyIMBDApp.Splash" parent="Theme.MyIMBDApp">
+        <item name="android:windowBackground">@color/primary_color_dark</item>
+        <item name="android:statusBarColor">@color/primary_color_dark</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+</resources>
+
+

@@ -6,7 +6,8 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
-    android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
+    android:theme="@style/ThemeOverlay.MaterialComponents.Dark"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:layout_width="64dp"

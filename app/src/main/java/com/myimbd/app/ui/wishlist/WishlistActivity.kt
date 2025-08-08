@@ -3,13 +3,16 @@ package com.myimbd.app.ui.wishlist
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import com.myimbd.app.R
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.util.TypedValue
 import com.myimbd.app.ui.details.MovieDetailsActivity
 import com.myimbd.app.ui.main.adapter.MovieAdapter
 import com.myimbd.app.ui.main.adapter.ViewType
 import com.myimbd.app.databinding.ActivityWishlistBinding
+import com.myimbd.app.util.ThemeManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,9 +23,15 @@ class WishlistActivity : AppCompatActivity() {
     private lateinit var movieAdapter: MovieAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeManager.applySavedTheme(this)
         super.onCreate(savedInstanceState)
         binding = ActivityWishlistBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Ensure status bar uses primary color on this screen
+        val typedValue = TypedValue()
+        theme.resolveAttribute(R.color.primary_color, typedValue, true)
+        window.statusBarColor = typedValue.data
 
         setupToolbar()
         setupRecyclerView()

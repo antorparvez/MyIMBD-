@@ -219,4 +219,7 @@
     <string name="debug_device">Device: %s</string>
     <string name="debug_android_version">Android: %s</string>
     
+    <!-- Settings -->
+    <string name="toggle_theme">Dark mode</string>
+    
 </resources>

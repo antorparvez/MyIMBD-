@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night overrides mapping light color names to dark values -->
+    <color name="primary_color">#90CAF9</color>
+    <color name="primary_light">#E3F2FD</color>
+
+    <color name="accent_color">#FF8A65</color>
+    <color name="accent_dark">#FFCCBC</color>
+
+    <color name="surface_light">#121212</color>
+    <color name="background_light">#121212</color>
+
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+
+    <!-- Optional: selectors/others to better match dark -->
+    <color name="divider">#424242</color>
+    <color name="ripple_color">#33FFFFFF</color>
+    <color name="status_bar_light">#000000</color>
+    <color name="navigation_bar_light">#121212</color>
+</resources>
+
