@@ -14,8 +14,10 @@ import com.myimbd.app.base.BaseFragment
 import com.myimbd.app.databinding.FragmentMovieListBinding
 import com.myimbd.app.ui.main.adapter.MovieAdapter
 import com.myimbd.app.ui.main.adapter.ViewType
+import com.myimbd.app.ui.main.animation.WishlistAnimation
 import com.myimbd.app.ui.main.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import android.util.Log
 
 @AndroidEntryPoint
 class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
@@ -56,6 +58,25 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
             },
             onWishlistClick = { movie ->
                 viewModel.toggleWishlist(movie)
+            },
+            onWishlistAnimation = { startView, parentView ->
+                Log.d("MovieListFragment", "Animation callback received")
+                Log.d("MovieListFragment", "Start view: ${startView.id}, Parent view: ${parentView.id}")
+                
+                // Find the wishlist button in the toolbar
+                val wishlistButton = activity?.findViewById<View>(R.id.wishlistButton)
+                if (wishlistButton != null) {
+                    Log.d("MovieListFragment", "Wishlist button found in toolbar: ${wishlistButton.id}")
+                    // Start the wishlist animation using the convenience method
+                    WishlistAnimation.animate(
+                        context = requireContext(),
+                        startView = startView,
+                        endView = wishlistButton,
+                        parentView = parentView
+                    )
+                } else {
+                    Log.e("MovieListFragment", "Wishlist button not found in toolbar!")
+                }
             }
         )
 

@@ -2,9 +2,12 @@ package com.myimbd.app.ui.main.adapter
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +21,13 @@ enum class ViewType { LIST, GRID }
 
 class MovieAdapter(
     private val onMovieClick: (MovieDomainEntity) -> Unit,
-    private val onWishlistClick: (MovieDomainEntity) -> Unit
+    private val onWishlistClick: (MovieDomainEntity) -> Unit,
+    private val onWishlistAnimation: ((View, ViewGroup) -> Unit)? = null
 ) : ListAdapter<MovieDomainEntity, RecyclerView.ViewHolder>(MovieDiffCallback()) {
+
+    companion object {
+        private const val TAG = "MovieAdapter"
+    }
 
     var currentViewType: ViewType = ViewType.LIST
         private set
@@ -72,11 +80,43 @@ class MovieAdapter(
                     if (movie.isWishlisted) R.drawable.ic_wishlist_filled
                     else R.drawable.ic_wishlist
                 )
+                
+                // Set tint color based on wishlist state
+                val tintColor = if (movie.isWishlisted) {
+                    ContextCompat.getColor(root.context, android.R.color.holo_red_light)
+                } else {
+                    ContextCompat.getColor(root.context, android.R.color.darker_gray)
+                }
+                wishlistButton.setColorFilter(tintColor)
 
                 root.setOnClickListener { onMovieClick(movie) }
                 wishlistButton.setOnClickListener {
+                    Log.d(TAG, "Wishlist button clicked for movie: ${movie.title}")
                     animateWishlistButton(wishlistButton)
+                    
+                    // Check if we're adding to wishlist (not removing)
+                    val isAddingToWishlist = !movie.isWishlisted
+                    
                     onWishlistClick(movie)
+                    
+                    // Trigger the wishlist animation only when adding to wishlist
+                    if (isAddingToWishlist) {
+                        onWishlistAnimation?.let { animationCallback ->
+                            Log.d(TAG, "Adding to wishlist - Animation callback available, finding parent view...")
+                            // Find the parent view group (usually the fragment's root view)
+                            val parentView = findParentViewGroup(root)
+                            parentView?.let { parent ->
+                                Log.d(TAG, "Parent view found: ${parent.id}, triggering animation...")
+                                animationCallback(wishlistButton, parent)
+                            } ?: run {
+                                Log.e(TAG, "Parent view not found!")
+                            }
+                        } ?: run {
+                            Log.w(TAG, "No animation callback provided")
+                        }
+                    } else {
+                        Log.d(TAG, "Removing from wishlist - No animation needed")
+                    }
                 }
             }
         }
@@ -93,11 +133,43 @@ class MovieAdapter(
                     if (movie.isWishlisted) R.drawable.ic_wishlist_filled
                     else R.drawable.ic_wishlist
                 )
+                
+                // Set tint color based on wishlist state
+                val tintColor = if (movie.isWishlisted) {
+                    ContextCompat.getColor(root.context, android.R.color.holo_red_light)
+                } else {
+                    ContextCompat.getColor(root.context, android.R.color.darker_gray)
+                }
+                wishlistButton.setColorFilter(tintColor)
 
                 root.setOnClickListener { onMovieClick(movie) }
                 wishlistButton.setOnClickListener {
+                    Log.d(TAG, "Wishlist button clicked for movie: ${movie.title}")
                     animateWishlistButton(wishlistButton)
+                    
+                    // Check if we're adding to wishlist (not removing)
+                    val isAddingToWishlist = !movie.isWishlisted
+                    
                     onWishlistClick(movie)
+                    
+                    // Trigger the wishlist animation only when adding to wishlist
+                    if (isAddingToWishlist) {
+                        onWishlistAnimation?.let { animationCallback ->
+                            Log.d(TAG, "Adding to wishlist - Animation callback available, finding parent view...")
+                            // Find the parent view group (usually the fragment's root view)
+                            val parentView = findParentViewGroup(root)
+                            parentView?.let { parent ->
+                                Log.d(TAG, "Parent view found: ${parent.id}, triggering animation...")
+                                animationCallback(wishlistButton, parent)
+                            } ?: run {
+                                Log.e(TAG, "Parent view not found!")
+                            }
+                        } ?: run {
+                            Log.w(TAG, "No animation callback provided")
+                        }
+                    } else {
+                        Log.d(TAG, "Removing from wishlist - No animation needed")
+                    }
                 }
             }
         }
@@ -122,6 +194,35 @@ class MovieAdapter(
             duration = 300
             start()
         }
+    }
+    
+    /**
+     * Finds the parent ViewGroup that can be used for the animation
+     * Prefers the root view of the activity for better visibility
+     */
+    private fun findParentViewGroup(view: View): ViewGroup? {
+        var currentView: View? = view
+        var bestParent: ViewGroup? = null
+        
+        while (currentView != null) {
+            if (currentView is ViewGroup) {
+                // Prefer the root view of the activity (usually CoordinatorLayout or DrawerLayout)
+                if (currentView.id == android.R.id.content || 
+                    currentView is androidx.coordinatorlayout.widget.CoordinatorLayout ||
+                    currentView is androidx.drawerlayout.widget.DrawerLayout) {
+                    bestParent = currentView
+                    break
+                }
+                // Fallback to any ViewGroup that's not the content root
+                if (currentView.id != android.R.id.content) {
+                    bestParent = currentView
+                }
+            }
+            currentView = currentView.parent as? View
+        }
+        
+        Log.d(TAG, "Found parent view group: ${bestParent?.id ?: "null"}")
+        return bestParent
     }
 
     // --- DiffUtil ---
