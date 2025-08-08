@@ -11,6 +11,8 @@ import com.myimbd.domain.usecase.GetMoviesByGenreUseCase
 import com.myimbd.domain.usecase.SearchMoviesUseCase
 import com.myimbd.domain.usecase.ToggleWishlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,13 +33,18 @@ class MainViewModel @Inject constructor(
     private val _wishlistCount = MutableLiveData<Int>()
     val wishlistCount: LiveData<Int> = _wishlistCount
 
+    private val _hasMoreData = MutableLiveData<Boolean>()
+    val hasMoreData: LiveData<Boolean> = _hasMoreData
+
     private val allMovies = mutableListOf<MovieDomainEntity>()
     private var currentPage = 1
     private var isLoadingMore = false
-    private val pageSize = 10
+    private val pageSize = 20 // Initial load 20 items
+    private val paginationThreshold = 18 // Load more when user reaches item 18
 
     private var currentSearchQuery: String = ""
     private var currentGenreFilter: String? = null
+    private var searchJob: Job? = null
 
     fun toggleViewType() {
         _currentViewType.value = if (_currentViewType.value == ViewType.LIST) {
@@ -49,12 +56,19 @@ class MainViewModel @Inject constructor(
 
     fun isLoading(): Boolean = isLoadingMore
 
-    fun loadMovies() {
+    fun loadMovies(isRefresh: Boolean = false) {
         if (isLoadingMore) return
+
+        if (isRefresh) {
+            currentPage = 1
+            allMovies.clear()
+        }
 
         viewModelScope.launch {
             try {
-                setLoading(true)
+                if (currentPage == 1) {
+                    setLoading(true)
+                }
                 isLoadingMore = true
                 setError(null)
 
@@ -67,11 +81,11 @@ class MainViewModel @Inject constructor(
                 }
 
                 if (newMovies.isNotEmpty()) {
-                    if (currentPage == 1) {
-                        allMovies.clear()
-                    }
                     allMovies.addAll(newMovies)
                     currentPage++
+                    _hasMoreData.value = newMovies.size >= pageSize
+                } else {
+                    _hasMoreData.value = false
                 }
 
                 _movies.postValue(allMovies.toList())
@@ -86,14 +100,53 @@ class MainViewModel @Inject constructor(
     }
 
     fun searchMovies(query: String) {
-        currentSearchQuery = query
-        currentPage = 1
-        loadMovies()
+        // Cancel previous search job
+        searchJob?.cancel()
+        
+        searchJob = viewModelScope.launch {
+            // Debounce search for 500ms
+            delay(500)
+            
+            currentSearchQuery = query.trim()
+            currentPage = 1
+            allMovies.clear()
+            
+            if (currentSearchQuery.isEmpty()) {
+                // Load all movies when search is empty
+                loadMovies()
+            } else {
+                // Perform search
+                try {
+                    setLoading(true)
+                    isLoadingMore = true
+                    setError(null)
+
+                    val searchResults = searchMoviesUseCase(currentSearchQuery, currentPage, pageSize)
+                    
+                    if (searchResults.isNotEmpty()) {
+                        allMovies.addAll(searchResults)
+                        currentPage++
+                        _hasMoreData.value = searchResults.size >= pageSize
+                    } else {
+                        _hasMoreData.value = false
+                    }
+
+                    _movies.postValue(allMovies.toList())
+                    updateWishlistCount()
+                } catch (e: Exception) {
+                    setError(e.message ?: "Search failed")
+                } finally {
+                    setLoading(false)
+                    isLoadingMore = false
+                }
+            }
+        }
     }
 
     fun filterByGenre(genre: String?) {
         currentGenreFilter = genre
         currentPage = 1
+        allMovies.clear()
         loadMovies()
     }
 
@@ -121,6 +174,27 @@ class MainViewModel @Inject constructor(
 
     fun refreshMovies() {
         currentPage = 1
+        allMovies.clear()
+        loadMovies(true)
+    }
+
+    fun loadMoreMovies() {
+        if (!isLoadingMore && _hasMoreData.value == true) {
+            loadMovies()
+        }
+    }
+
+    fun shouldLoadMore(position: Int): Boolean {
+        return !isLoadingMore && 
+               _hasMoreData.value == true && 
+               position >= paginationThreshold &&
+               position >= allMovies.size - 2 // Load when 2 items away from end
+    }
+
+    fun clearSearch() {
+        currentSearchQuery = ""
+        currentPage = 1
+        allMovies.clear()
         loadMovies()
     }
 }

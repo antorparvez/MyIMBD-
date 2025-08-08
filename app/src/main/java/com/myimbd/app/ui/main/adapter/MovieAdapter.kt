@@ -58,7 +58,7 @@ class MovieAdapter(
             binding.movieDirector.text = movie.director ?: ""
 
             Glide.with(binding.moviePoster.context)
-                .load(movie.poster)
+                .load(movie.posterUrl)
                 .placeholder(R.drawable.ic_movie)
                 .error(R.drawable.ic_movie)
                 .into(binding.moviePoster)
@@ -82,7 +82,7 @@ class MovieAdapter(
             binding.movieTitle.text = movie.title
 
             Glide.with(binding.moviePoster.context)
-                .load(movie.poster)
+                .load(movie.posterUrl)
                 .placeholder(R.drawable.ic_movie)
                 .error(R.drawable.ic_movie)
                 .into(binding.moviePoster)

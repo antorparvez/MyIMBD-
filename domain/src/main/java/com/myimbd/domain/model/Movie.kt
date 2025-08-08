@@ -9,6 +9,6 @@ data class MovieDomainEntity(
     val actors: String?,
     val genres: List<String>,
     val plot: String?,
-    val poster: String?,
+    val posterUrl: String?,
     val isWishlisted: Boolean = false
 )

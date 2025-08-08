@@ -1,6 +1,8 @@
 package com.myimbd.app.ui.main
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.myimbd.app.R
 import com.myimbd.app.databinding.FragmentMovieListBinding
@@ -42,6 +45,7 @@ class MovieListFragment : Fragment() {
         setupChips()
         setupClickListeners()
         setupObservers()
+        setupPagination()
         
         // Load initial data
         viewModel.loadMovies()
@@ -62,6 +66,22 @@ class MovieListFragment : Fragment() {
             adapter = movieAdapter
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
+            addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: android.graphics.Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position != RecyclerView.NO_POSITION) {
+                        outRect.top = 8
+                        outRect.bottom = 8
+                        outRect.left = 8
+                        outRect.right = 8
+                    }
+                }
+            })
         }
     }
 
@@ -87,9 +107,36 @@ class MovieListFragment : Fragment() {
         }
     }
 
+    private fun setupPagination() {
+        binding.moviesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                
+                val layoutManager = recyclerView.layoutManager
+                if (layoutManager is LinearLayoutManager) {
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                    
+                    // Check if we should load more based on position
+                    if (viewModel.shouldLoadMore(lastVisibleItemPosition)) {
+                        viewModel.loadMoreMovies()
+                    }
+                } else if (layoutManager is GridLayoutManager) {
+                    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                    
+                    // Check if we should load more based on position
+                    if (viewModel.shouldLoadMore(lastVisibleItemPosition)) {
+                        viewModel.loadMoreMovies()
+                    }
+                }
+            }
+        })
+    }
+
     private fun setupObservers() {
         viewModel.movies.observe(viewLifecycleOwner) { movies ->
-            movieAdapter.submitList(movies)
+            movieAdapter.submitList(movies.toMutableList())
             updateEmptyState(movies.isEmpty())
             updateResultsText(movies.size)
         }
@@ -99,13 +146,18 @@ class MovieListFragment : Fragment() {
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.loadingLayout.isVisible = isLoading
+            binding.loadingLayout.isVisible = isLoading && viewModel.movies.value?.isEmpty() == true
+            binding.paginationLoadingLayout.isVisible = isLoading && viewModel.movies.value?.isNotEmpty() == true
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
             error?.let {
                 // Show error message (you can implement a snackbar or toast)
             }
+        }
+
+        viewModel.hasMoreData.observe(viewLifecycleOwner) { hasMore ->
+            // You can show/hide a "Load More" button or handle pagination UI here
         }
     }
 

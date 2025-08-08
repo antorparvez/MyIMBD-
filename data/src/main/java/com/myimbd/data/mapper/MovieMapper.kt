@@ -14,7 +14,7 @@ fun MovieDto.toDomainEntity(): MovieDomainEntity {
         actors = actors,
         genres = genres,
         plot = plot,
-        poster = posterUrl,
+        posterUrl = posterUrl,
         isWishlisted = false
     )
 }
@@ -44,7 +44,7 @@ fun MovieEntity.toDomainEntity(): MovieDomainEntity {
         actors = actors,
         genres = genres,
         plot = plot,
-        poster = poster,
+        posterUrl = poster,
         isWishlisted = isWishlisted
     )
 }
@@ -59,7 +59,7 @@ fun MovieDomainEntity.toEntity(): MovieEntity {
         actors = actors,
         genres = genres,
         plot = plot,
-        poster = poster,
+        poster = posterUrl,
         isWishlisted = isWishlisted
     )
 }

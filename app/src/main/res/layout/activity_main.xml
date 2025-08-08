@@ -6,12 +6,13 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gradient">
+    android:fitsSystemWindows="true">
 
     <!-- Main Content -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <!-- Collapsible App Bar -->
         <com.google.android.material.appbar.AppBarLayout
@@ -19,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:elevation="0dp">
+            app:elevation="0dp"
+            android:fitsSystemWindows="true">
 
             <!-- Collapsing Toolbar -->
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -198,6 +200,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="?attr/colorSurface"
+        android:fitsSystemWindows="true"
         app:itemIconTint="@color/nav_drawer_selector"
         app:itemTextColor="@color/nav_drawer_selector"
         app:headerLayout="@layout/nav_header"

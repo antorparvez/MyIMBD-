@@ -48,7 +48,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                     movieGenres.text = it.genres.joinToString(", ")
 
                     Glide.with(this@MovieDetailsActivity)
-                        .load(it.poster)
+                        .load(it.posterUrl)
                         .placeholder(R.drawable.ic_movie)
                         .into(moviePoster)
 

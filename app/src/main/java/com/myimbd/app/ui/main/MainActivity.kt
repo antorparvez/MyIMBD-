@@ -81,14 +81,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
-            viewModel.searchMovies("")
+            viewModel.clearSearch()
+            hideSearchBar()
         }
 
         binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
                 val query = binding.searchEditText.text.toString()
-                viewModel.searchMovies(query)
-                hideSearchBar()
+                if (query.isNotEmpty()) {
+                    viewModel.searchMovies(query)
+                    hideSearchBar()
+                }
                 return@setOnEditorActionListener true
             }
             false
@@ -149,19 +152,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> {
                 loadMovieListFragment()
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                true
+                return true
             }
             R.id.nav_wishlist -> {
                 startActivity(Intent(this, WishlistActivity::class.java))
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                true
+                return true
             }
             R.id.nav_theme -> {
                 toggleTheme()
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                true
+                return true
             }
-            else -> false
         }
         return false
     }
