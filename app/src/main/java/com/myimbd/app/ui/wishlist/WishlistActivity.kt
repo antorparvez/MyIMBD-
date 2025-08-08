@@ -55,7 +55,7 @@ class WishlistActivity : AppCompatActivity() {
                 intent.putExtra("movie_id", movie.id)
                 startActivity(intent)
             },
-            onWishlistClick = { movie,  ->
+            onWishlistClick = { movie ->
                 viewModel.removeFromWishlist(movie.id)
             }
         )

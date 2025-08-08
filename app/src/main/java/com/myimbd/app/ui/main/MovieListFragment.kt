@@ -59,7 +59,7 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
     private fun setupRecyclerView() {
         movieAdapter = MovieAdapter(
             onMovieClick = { movie ->
-                (activity as? MainActivity)?.navigateToMovieDetails(movie.id.toString())
+                (activity as? MainActivity)?.navigateToMovieDetails(movie.id)
             },
             onWishlistClick = { movie ->
                 viewModel.toggleWishlist(movie)

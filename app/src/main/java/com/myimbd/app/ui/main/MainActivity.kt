@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .commit()
     }
 
-    fun navigateToMovieDetails(movieId: String) {
+    fun navigateToMovieDetails(movieId: Int) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
         intent.putExtra("movie_id", movieId)
         startActivity(intent)
