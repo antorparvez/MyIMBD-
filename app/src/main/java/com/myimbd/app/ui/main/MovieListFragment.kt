@@ -2,6 +2,8 @@ package com.myimbd.app.ui.main
 
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,6 +31,8 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
     private var isPaginationInProgress = false
     private var lastPaginationTime = 0L
     private val paginationDelay = 1000L // 1 second delay between pagination calls
+    private var currentGenreSet: Set<String> = emptySet()
+    private var selectedGenre: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,7 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
         setupClickListeners()
         setupObservers()
         setupRecyclerViewPagination()
+        binding.filterCard.visibility = View.GONE
         
         // Observe base ViewModel states
         observeBaseViewModel(viewModel)
@@ -103,19 +108,25 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
     }
 
     private fun setupChips() {
-       /* binding.genreChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            val selectedChip = checkedIds.firstOrNull()?.let { group.findViewById<Chip>(it) }
-            when (selectedChip?.id) {
-                R.id.chipAll -> viewModel.filterByGenre(null)
-                R.id.chipAction -> viewModel.filterByGenre("Action")
-                R.id.chipDrama -> viewModel.filterByGenre("Drama")
-                R.id.chipComedy -> viewModel.filterByGenre("Comedy")
-                R.id.chipHorror -> viewModel.filterByGenre("Horror")
-                R.id.chipThriller -> viewModel.filterByGenre("Thriller")
-                R.id.chipAdventure -> viewModel.filterByGenre("Adventure")
-                R.id.chipAnimation -> viewModel.filterByGenre("Animation")
+        // Listener to react on chip selection changes
+        binding.genreChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            val checkedId = checkedIds.firstOrNull()
+            val selectedText = checkedId?.let { id ->
+                val chip = group.findViewById<Chip>(id)
+                chip?.text?.toString()
             }
-        }*/
+            selectedGenre = if (selectedText == null || selectedText == "All") {
+                null
+            } else {
+                selectedText
+            }
+
+            if (selectedGenre == null) {
+                viewModel.filterByGenre(null)
+            } else {
+                viewModel.filterByGenre(selectedGenre)
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -124,37 +135,54 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
         }
     }
 
+    fun toggleFilterVisibility() {
+        val shouldShow = binding.filterCard.visibility != View.VISIBLE
+        if (shouldShow) {
+            binding.filterCard.visibility = View.VISIBLE
+            val slideDown = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_down)
+            binding.filterCard.startAnimation(slideDown)
+        } else {
+            val slideUp = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+            slideUp.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation) {}
+                override fun onAnimationRepeat(animation: Animation) {}
+                override fun onAnimationEnd(animation: Animation) {
+                    binding.filterCard.visibility = View.GONE
+                }
+            })
+            binding.filterCard.startAnimation(slideUp)
+        }
+    }
+
     private fun setupRecyclerViewPagination() {
         binding.moviesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                
-                if (dy > 0) { // Scrolling down
-                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                    layoutManager?.let { manager ->
-                        val visibleItemCount = manager.childCount
-                        val totalItemCount = manager.itemCount
-                        val firstVisibleItemPosition = manager.findFirstVisibleItemPosition()
-                        
-                        // Check if we're near the end (within 5 items)
-                        val shouldLoadMore = (visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 5 &&
-                                firstVisibleItemPosition >= 0 &&
-                                totalItemCount >= 0 &&
-                                totalItemCount > 0
-                        
-                        val currentTime = System.currentTimeMillis()
-                        val canLoadMore = currentTime - lastPaginationTime > paginationDelay
-                        
-                        if (shouldLoadMore && 
-                            viewModel.hasMoreData.value == true && 
-                            viewModel.isLoading.value != true &&
-                            !isPaginationInProgress &&
-                            canLoadMore) {
-                            isPaginationInProgress = true
-                            lastPaginationTime = currentTime
-                            viewModel.loadMoreMovies()
-                        }
-                    }
+
+                if (dy <= 0) return
+
+                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+
+                val totalItemCount = layoutManager.itemCount
+                if (totalItemCount <= 0) return
+
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                if (lastVisibleItemPosition == RecyclerView.NO_POSITION) return
+
+                val thresholdFromEnd = 5
+                val nearEnd = lastVisibleItemPosition >= totalItemCount - 1 - thresholdFromEnd
+
+                val currentTime = System.currentTimeMillis()
+                val canLoadMoreAfterDelay = currentTime - lastPaginationTime > paginationDelay
+
+                if (nearEnd &&
+                    viewModel.hasMoreData.value == true &&
+                    viewModel.isLoading.value != true &&
+                    !isPaginationInProgress &&
+                    canLoadMoreAfterDelay) {
+                    isPaginationInProgress = true
+                    lastPaginationTime = currentTime
+                    viewModel.loadMoreMovies()
                 }
             }
         })
@@ -166,6 +194,15 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
             movieAdapter.submitList(movies.toMutableList()) {
                 updateEmptyState(movies.isEmpty())
                 updateResultsText(movies.size)
+                // Reset pagination state after list updates to allow subsequent loads
+                isPaginationInProgress = false
+                // Build/update genre chips from current movies
+                val allGenres = movies.flatMap { it.genres }.toSet().sorted()
+                val newGenreSet = allGenres.toSet()
+                if (newGenreSet != currentGenreSet && newGenreSet.isNotEmpty()) {
+                    currentGenreSet = newGenreSet
+                    updateGenreChips(allGenres)
+                }
             }
         }
 
@@ -182,6 +219,54 @@ class MovieListFragment : BaseFragment<FragmentMovieListBinding>(
                 showError(it)
                 isPaginationInProgress = false
             }
+        }
+    }
+
+    private fun updateGenreChips(genresSorted: List<String>) {
+        val group = binding.genreChipGroup
+        group.setOnCheckedStateChangeListener(null)
+        group.removeAllViews()
+
+        // Add "All" chip
+        val allChip = Chip(requireContext()).apply {
+            text = "All"
+            isCheckable = true
+            isChecked = selectedGenre == null
+            isSingleLine = true
+        }
+        group.addView(allChip)
+
+        // Add one chip per genre
+        var checkedExplicitly = selectedGenre == null
+        genresSorted.forEach { genre ->
+            val chip = Chip(requireContext()).apply {
+                text = genre
+                isCheckable = true
+                isSingleLine = true
+                isChecked = selectedGenre == genre
+            }
+            group.addView(chip)
+            if (selectedGenre == genre) checkedExplicitly = true
+        }
+
+        // Re-attach listener
+        group.setOnCheckedStateChangeListener { g, checkedIds ->
+            val checkedId = checkedIds.firstOrNull()
+            val selectedText = checkedId?.let { id ->
+                val chip = g.findViewById<Chip>(id)
+                chip?.text?.toString()
+            }
+            selectedGenre = if (selectedText == null || selectedText == "All") null else selectedText
+            if (selectedGenre == null) {
+                viewModel.filterByGenre(null)
+            } else {
+                viewModel.filterByGenre(selectedGenre)
+            }
+        }
+
+        // Ensure one chip is checked as selectionRequired=true
+        if (!checkedExplicitly) {
+            allChip.isChecked = true
         }
     }
 

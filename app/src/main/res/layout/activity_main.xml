@@ -79,17 +79,19 @@
                         android:tint="@color/white"
                         android:contentDescription="Search" />
 
-                    <!-- Theme Toggle -->
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/themeToggleButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_tune"
-                        android:tint="@color/white"
-                        android:contentDescription="Toggle Theme" />
+                     <!-- Filter Icon -->
+                     <androidx.appcompat.widget.AppCompatImageButton
+                         android:id="@+id/filterButton"
+                         android:layout_width="48dp"
+                         android:layout_height="48dp"
+                         android:layout_gravity="end"
+                         android:layout_marginEnd="8dp"
+                         android:background="?attr/selectableItemBackgroundBorderless"
+                         android:src="@drawable/ic_tune"
+                         android:tint="@color/white"
+                         android:contentDescription="@string/accessibility_filter_button" />
+
+
 
                     <!-- Wishlist Icon with Badge -->
                     <FrameLayout
@@ -145,15 +147,6 @@
                     android:orientation="horizontal"
                     android:padding="8dp">
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/searchBackButton"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_menu_modern"
-                        android:tint="?attr/colorOnSurface"
-                        android:contentDescription="Back" />
-
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/searchEditText"
                         android:layout_width="0dp"
@@ -174,7 +167,7 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_mic_modern"
+                        android:src="@drawable/ic_close"
                         android:tint="?attr/colorOnSurface"
                         android:contentDescription="Clear Search" />
 

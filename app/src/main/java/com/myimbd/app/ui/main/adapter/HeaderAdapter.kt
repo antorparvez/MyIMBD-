@@ -8,8 +8,15 @@ import com.myimbd.app.databinding.ItemHeaderBinding
 class HeaderAdapter(
     private val onSearchQueryChanged: (String) -> Unit,
     private val onGenreFilterChanged: (String?) -> Unit,
-    private val availableGenres: List<String>
+    availableGenres: List<String> = emptyList()
 ) : RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
+
+    private var availableGenres: List<String> = availableGenres
+
+    fun setGenres(genres: List<String>) {
+        availableGenres = genres
+        notifyItemChanged(0)
+    }
 
     inner class HeaderViewHolder(private val binding: ItemHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -67,20 +67,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             showSearchBar()
         }
 
-        // Theme toggle
-        binding.themeToggleButton.setOnClickListener {
-            toggleTheme()
+        // Filter button
+        binding.filterButton.setOnClickListener {
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+            if (fragment is MovieListFragment) {
+                fragment.toggleFilterVisibility()
+            }
         }
+
 
         // Wishlist button
         binding.wishlistButton.setOnClickListener {
             startActivity(Intent(this, WishlistActivity::class.java))
         }
 
-        // Search functionality
-        binding.searchBackButton.setOnClickListener {
-            hideSearchBar()
-        }
 
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
@@ -172,26 +172,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_wishlist -> {
-                startActivity(Intent(this, WishlistActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onBackPressed() {
-        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
-    }
 }
