@@ -64,15 +64,15 @@ The app follows Clean Architecture principles with three main layers:
 
 ## 📸 Screenshots
 
-![Splash](screenshots/splash.png)
-
-![Movie List](screenshots/movielist.png)
-
-![Filter](screenshots/filter.png)
-
-![Search](screenshots/search.png)
-
-![Details](screenshots/details.png)
+<div align="center">
+  <img src="screenshots/splash.png" alt="Splash" title="Splash" width="49%"/>
+  <img src="screenshots/movielist.png" alt="Movie List" title="Movie List" width="49%"/>
+  <br/>
+  <img src="screenshots/filter.png" alt="Filter" title="Filter" width="49%"/>
+  <img src="screenshots/search.png" alt="Search" title="Search" width="49%"/>
+  <br/>
+  <img src="screenshots/details.png" alt="Details" title="Details" width="49%"/>
+</div>
 
 ## 🚀 Setup Instructions
 
