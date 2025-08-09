@@ -11,7 +11,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:src="@drawable/ic_movie"
-        android:tint="@android:color/white"
+        android:theme="@style/Theme.AppCompat.DayNight"
         app:layout_constraintBottom_toTopOf="@+id/appName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

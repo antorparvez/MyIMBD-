@@ -62,6 +62,18 @@ The app follows Clean Architecture principles with three main layers:
 3. **Movie Details**: Detailed movie information
 4. **Wishlist**: List of wishlisted movies
 
+## 📸 Screenshots
+
+![Splash](screenshots/splash.png)
+
+![Movie List](screenshots/movielist.png)
+
+![Filter](screenshots/filter.png)
+
+![Search](screenshots/search.png)
+
+![Details](screenshots/details.png)
+
 ## 🚀 Setup Instructions
 
 ### Prerequisites
