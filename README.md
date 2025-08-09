@@ -73,6 +73,11 @@ The app follows Clean Architecture principles with three main layers:
   <img src="screenshots/details.png" alt="Details" title="Details" width="24%"/>
 </div>
 
+## 📲 Download APK
+
+- Latest build: [MyIMBD APK](screenshots/my_imbd.apk)
+- Direct download: [MyIMBD APK (raw link)](https://github.com/antorparvez/MyIMBD-/raw/main/screenshots/my_imbd.apk)
+
 ## 🚀 Setup Instructions
 
 ### Prerequisites
